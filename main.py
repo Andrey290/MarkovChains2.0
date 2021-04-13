@@ -29,13 +29,13 @@ def generation(bigrams_dictionary):
                 control_list.append(elem)
 
         random.shuffle(work_list)  # перемешивание порядка
-        print(int(sum([i[1] * 10 for i in work_list])))
-        fit_count = random.randrange(0, sum([i[1] * 10 for i in work_list]), 1)
+        fit_count = random.randrange(0, int(sum([i[1] * 10 for i in work_list])) - 1, 1)
         j = 0
         chosen_word = STRING_ENDING
         while fit_count > 0 and j < len(work_list):
             fit_count -= work_list[j][1] * 10
             chosen_word = work_list[j][0]
+            j += 1
         work_massive.append(chosen_word)
     if len(work_massive) > 2:
         work_massive = work_massive[:-1]
@@ -47,6 +47,8 @@ def generation(bigrams_dictionary):
 
 
 phrases = new_corpus.lower()
+phrases = phrases.replace(",", " ")
+print(phrases)
 for elem in END_SYMBOLS:
     phrases = phrases.replace(elem, SEPARATOR)
 list_of_phrases = [f"{STRING_OPENING} {elem} {STRING_ENDING}" for elem in phrases.split(SEPARATOR)]
