@@ -47,8 +47,8 @@ def generation(bigrams_dictionary):
 
 
 phrases = new_corpus.lower()
-phrases = phrases.replace(",", " ")
-print(phrases)
+# phrases = phrases.replace(",", " ")
+# print(phrases)
 for elem in END_SYMBOLS:
     phrases = phrases.replace(elem, SEPARATOR)
 list_of_phrases = [f"{STRING_OPENING} {elem} {STRING_ENDING}" for elem in phrases.split(SEPARATOR)]
