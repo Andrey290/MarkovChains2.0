@@ -5,7 +5,7 @@ new_corpus = input()  # будет браться из json файла
 SEPARATOR = "#РАЗДЕЛИТЕЛЬ&"
 STRING_OPENING = "#СТАРТ&"
 STRING_ENDING = "#КОНЕЦ&"
-END_SYMBOLS = ["!", "?", ".", "..."]
+END_SYMBOLS = ["!", "?", ".", "...", "\n"]
 
 
 # функция рассчёта вероятности каждого звена(link) в цепи(chain)
@@ -32,10 +32,12 @@ def generation(bigrams_dictionary):
         fit_count = random.randrange(0, int(sum([i[1] * 10 for i in work_list])) - 1, 1)
         j = 0
         chosen_word = STRING_ENDING
-        while fit_count > 0 and j < len(work_list):
+        # while fit_count > 0 and j < len(work_list):
+        n = 0
+        while n < 15:
             fit_count -= work_list[j][1] * 10
             chosen_word = work_list[j][0]
-            j += 1
+            n += 1
         work_massive.append(chosen_word)
     if len(work_massive) > 2:
         work_massive = work_massive[:-1]
