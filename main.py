@@ -1,6 +1,5 @@
 import random
-
-new_corpus = input()  # будет браться из json файла
+import sqlite3
 
 SEPARATOR = "#РАЗДЕЛИТЕЛЬ&"
 STRING_OPENING = "#СТАРТ&"
@@ -47,37 +46,41 @@ def generation(bigrams_dictionary):
     return "Ничего не придумалось."
 
 
+new_corpus = input()
+def remember(corpus):
+    phrases = corpus.lower()
+    # phrases = phrases.replace(",", " ")
+    # print(phrases)
+    for elem in END_SYMBOLS:
+        phrases = phrases.replace(elem, SEPARATOR)
+    list_of_phrases = [f"{STRING_OPENING} {elem} {STRING_ENDING}" for elem in phrases.split(SEPARATOR)]
 
-phrases = new_corpus.lower()
-# phrases = phrases.replace(",", " ")
-# print(phrases)
-for elem in END_SYMBOLS:
-    phrases = phrases.replace(elem, SEPARATOR)
-list_of_phrases = [f"{STRING_OPENING} {elem} {STRING_ENDING}" for elem in phrases.split(SEPARATOR)]
+    # запись биграм
+    dct_of_bigrams = {}
+    bigram_keys = []
+    for phrase in list_of_phrases:
+        phrase = phrase.split()
+        if phrase != [STRING_OPENING, STRING_ENDING]:
+            for i in range(len(phrase) - 1):
+                if phrase[i] not in bigram_keys:
+                    bigram_keys.append(phrase[i])
+                    dct_of_bigrams[phrase[i]] = {"variants": [phrase[i + 1]],  # возможные варианты слов
+                                                 phrase[i + 1]: [1, 1],  # слово : [чило вхождений, процент вероятности]
+                                                 }
+                elif [phrase[i + 1]] in dct_of_bigrams[phrase[i]]["variants"]:
+                    dct_of_bigrams[phrase[i]][phrase[i + 1]][0] += 1
+                else:
+                    dct_of_bigrams[phrase[i]]["variants"].append(phrase[i + 1])
+                    dct_of_bigrams[phrase[i]][phrase[i + 1]] = [1, 1]
 
-# запись биграм
-dct_of_bigrams = {}
-bigram_keys = []
-for phrase in list_of_phrases:
-    phrase = phrase.split()
-    if phrase != [STRING_OPENING, STRING_ENDING]:
-        for i in range(len(phrase) - 1):
-            if phrase[i] not in bigram_keys:
-                bigram_keys.append(phrase[i])
-                dct_of_bigrams[phrase[i]] = {"variants": [phrase[i + 1]],  # возможные варианты слов
-                                             phrase[i + 1]: [1, 1],  # слово : [чило вхождений, процент вероятности]
-                                             }
-            elif [phrase[i + 1]] in dct_of_bigrams[phrase[i]]["variants"]:
-                dct_of_bigrams[phrase[i]][phrase[i + 1]][0] += 1
-            else:
-                dct_of_bigrams[phrase[i]]["variants"].append(phrase[i + 1])
-                dct_of_bigrams[phrase[i]][phrase[i + 1]] = [1, 1]
+    # словарь{слово: {список продолжений: [продолжение1],
+    #                  продолжение1: [количество, верояность]}}
+    for word in bigram_keys:
+        dct_of_bigrams[word] = chain_probability_calc(dct_of_bigrams[word])
 
-# словарь{слово: {список продолжений: [продолжение1],
-#                  продолжение1: [количество, верояность]}}
-for word in bigram_keys:
-    dct_of_bigrams[word] = chain_probability_calc(dct_of_bigrams[word])
+    print(dct_of_bigrams)
+    return generation(dct_of_bigrams)
 
-print(bigram_keys)
-print(dct_of_bigrams)
-print(generation(dct_of_bigrams))
+
+
+print(remember(new_corpus))

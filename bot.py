@@ -1,5 +1,6 @@
 import discord
 import asyncio
+from main import chain_probability_calc, generation,
 
 TOKEN = "ODMxNjIxOTcxNDg1MzkyOTY2.YHX6UA.QgPkJD4xU5qY-ZboO5VjCwnkGjY"
 
@@ -22,6 +23,8 @@ class YLBotClient(discord.Client):
             return
         elif "привет" in message.content.lower():
             await message.channel.send("И тебе привет")
+        elif len(message.content) > 15:
+
         else:
             await message.channel.send("Спасибо за сообщение")
 
