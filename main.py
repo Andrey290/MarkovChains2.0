@@ -1,9 +1,10 @@
 import random
+import json
 import sqlite3
 
-SEPARATOR = "#РАЗДЕЛИТЕЛЬ&"
-STRING_OPENING = "#СТАРТ&"
-STRING_ENDING = "#КОНЕЦ&"
+SEPARATOR = "s3p4r4t0r"
+STRING_OPENING = "сt4рt"
+STRING_ENDING = "3nD"
 END_SYMBOLS = ["!", "?", ".", "...", "\n"]
 
 
@@ -47,7 +48,7 @@ def generation(bigrams_dictionary):
 
 
 new_corpus = input()
-def remember(corpus):
+def syinon(corpus):
     phrases = corpus.lower()
     # phrases = phrases.replace(",", " ")
     # print(phrases)
@@ -56,8 +57,10 @@ def remember(corpus):
     list_of_phrases = [f"{STRING_OPENING} {elem} {STRING_ENDING}" for elem in phrases.split(SEPARATOR)]
 
     # запись биграм
-    dct_of_bigrams = {}
-    bigram_keys = []
+    with open('memory.json') as input_file:
+        dct_of_bigrams = json.load(input_file)
+    bigram_keys = [elem for elem in dct_of_bigrams]
+
     for phrase in list_of_phrases:
         phrase = phrase.split()
         if phrase != [STRING_OPENING, STRING_ENDING]:
@@ -78,9 +81,7 @@ def remember(corpus):
     for word in bigram_keys:
         dct_of_bigrams[word] = chain_probability_calc(dct_of_bigrams[word])
 
-    print(dct_of_bigrams)
+    with open('memory.json', 'w') as output_file:
+        json.dump(dct_of_bigrams, output_file)
+
     return generation(dct_of_bigrams)
-
-
-
-print(remember(new_corpus))
