@@ -33,8 +33,6 @@ class YLBotClient(discord.Client):
             await message.channel.send("И тебе привет")
         elif len(message.content) > 15:
             await message.channel.send(syinon(message.content))
-        else:
-            await message.channel.send("Спасибо за сообщение")
 
 
 # функция рассчёта вероятности каждого звена(link) в цепи(chain)
