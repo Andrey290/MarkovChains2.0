@@ -3,7 +3,7 @@ import asyncio
 import random
 import json
 
-TOKEN = "ODMxNjIxOTcxNDg1MzkyOTY2.YHX6UA.ivLQwYNE4xChss3Tu00TzIpCRQ4"
+TOKEN = "А вот нет!"
 SEPARATOR = "s3p4r4t0r"
 STRING_OPENING = "сt4рt"
 STRING_ENDING = "3nD"
