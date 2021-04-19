@@ -22,13 +22,15 @@ class YLBotClient(discord.Client):
         )
 
     async def on_message(self, message):
-        print("Кто-то прислал сообщение.")
+        print(f"Кто-то прислал сообщение в гильдии {message.guild.name}")
         if message.author == self.user:
             return
         elif "привет" in message.content.lower():
-            await message.channel.send("И тебе привет")
+            await message.channel.send("И тебе привет!")
         elif len(message.content) > 15:
-            await message.channel.send(syinon(message.content, message.guild.id))
+            smth_to_send = syinon(message.content, message.guild.id)
+            if smth_to_send != "Ничего не придумалось.":
+                await message.channel.send(smth_to_send)
 
 client = YLBotClient()
 client.run(TOKEN)
