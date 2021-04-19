@@ -27,9 +27,9 @@ class YLBotClient(discord.Client):
             return
         elif "привет" in message.content.lower():
             await message.channel.send("И тебе привет!")
-        elif len(message.content) > 15:
-            smth_to_send = syinon(message.content, message.guild.id)
-            if smth_to_send != "Ничего не придумалось.":
+        else:
+            smth_to_send = syinon(message.content, message.guild.id, "discord")
+            if smth_to_send != "Ничего не придумалось." and random.choice([0, 1, 2, 3, 4, 5]) == 5:
                 await message.channel.send(smth_to_send)
 
 client = YLBotClient()

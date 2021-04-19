@@ -43,7 +43,7 @@ def generation(bigrams_dictionary):
     return "Ничего не придумалось."
 
 
-def syinon(corpus, memory_id):
+def syinon(corpus, memory_id, source):
     phrases = corpus.lower()
     # phrases = phrases.replace(",", " ")
     # print(phrases)
@@ -52,21 +52,33 @@ def syinon(corpus, memory_id):
     list_of_phrases = [f"{STRING_OPENING} {elem} {STRING_ENDING}" for elem in phrases.split(SEPARATOR)]
 
     # проверка на то, что такая память уже сущестсует
-    con = sqlite3.connect("guilds")
-    cur = con.cursor()
-    if memory_id not in [elem[0] for elem in cur.execute("SELECT * FROM guild_ids").fetchall()]:
-        a = {'сt4рt': {'variants': ["3nD"], "3nD": [1, 1.0]}}
-        with open(f'{memory_id}.json', 'w') as output_file:
-            json.dump(a, output_file)
-        string = f"INSERT INTO guild_ids(id) VALUES({memory_id})"
-        cur.execute(string)
-        con.commit()
-    con.close()
+    if source == "discord":
+        con = sqlite3.connect("discord_database")
+        cur = con.cursor()
+        if memory_id not in [elem[0] for elem in cur.execute("SELECT * FROM guild_ids").fetchall()]:
+            a = {'сt4рt': {'variants': ["3nD"], "3nD": [1, 1.0]}}
+            with open(f'discord_memory/{memory_id}.json', 'w') as output_file:
+                json.dump(a, output_file)
+            string = f"INSERT INTO guild_ids(id) VALUES({memory_id})"
+            cur.execute(string)
+            con.commit()
+        con.close()
+    elif source == "vk":
+        pass
+    elif source == "tg":
+        pass
+
 
     # запись биграм
-    with open(f'{memory_id}.json') as input_file:
-        dct_of_bigrams = json.load(input_file)
-    bigram_keys = [elem for elem in dct_of_bigrams]
+    bigram_keys = []
+    if source == "discord":
+        with open(f'discord_memory/{memory_id}.json') as input_file:
+            dct_of_bigrams = json.load(input_file)
+        bigram_keys = [elem for elem in dct_of_bigrams]
+    elif source == "vk":
+        pass
+    elif source == "tg":
+        pass
 
     for phrase in list_of_phrases:
         phrase = phrase.split()
@@ -88,7 +100,12 @@ def syinon(corpus, memory_id):
     for word in bigram_keys:
         dct_of_bigrams[word] = chain_probability_calc(dct_of_bigrams[word])
 
-    with open(f'{memory_id}.json', 'w') as output_file:
-        json.dump(dct_of_bigrams, output_file)
+    if source == "discord":
+        with open(f'discord_memory/{memory_id}.json', 'w') as output_file:
+            json.dump(dct_of_bigrams, output_file)
+    elif source == "vk":
+        pass
+    elif source == "tg":
+        pass
 
     return generation(dct_of_bigrams)
